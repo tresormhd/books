@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Document</title>
+    
+</head>
+<body >
+
+    <% include header.ejs %>
+    <h1 align="center"><%= test %> </h1>      
+    <p>juste un template pour tester la page des livres !!! </p>
+    <div class="book-info">
+        <% for (romans of books) { %>
+            <div><%= romans.title %> , auteur : <%= romans.author %> </div>
+        <%  } %> 
+    </div>
+
+    <form action="/books" method="post">
+        <label > titre du romans</label>
+        <input type="text" name="titre" id="titleB" >
+        <label > auteur du romans</label>
+        <input type="text" name="auteur" id="auteurB">
+
+        <input type="submit" value="envoyer">
+    </form>
+
+    <script>
+        const form = document.querySelector('form')
+        form.addEventListener('submit',addBook)
+
+        function addBook(e) {
+            e.preventDefault();
+
+            if (fetch) {
+                fetch('/books',{
+                method:'post',
+                body: new FormData(form)
+                })
+                .then(checkStatus)
+                .catch(function(error){
+                    console.error('request failed', error)
+                })
+            } else {
+                //
+            }
+        }
+        function  checkStatus(response) {
+            if (response.status >= 200 && response.status < 300) {
+                let newBooksDiv = document.createElement('div');
+                const bookTitle = document.getElementById('titleB').value;
+                const bookAuteur = document.getElementById('auteurB').value;
+                newBooksDiv.innerHTML = `${bookTitle} (${bookAuteur})`;
+                document.querySelector('.book-info').appendChild(newBooksDiv);
+                form.reset();
+            } 
+        }
+
+    </script>
+</body>
+</html>
